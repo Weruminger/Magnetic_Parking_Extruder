@@ -6,8 +6,8 @@
 ;Generated with Cura_SteamEngine 3.4.1
 T0
 M190 S75
-M104 S240
-M109 S240
+M104 S248
+M109 S248
 M82 ;absolute extrusion mode
 ; Printer start settings begin
 M92 X160 Y160 Z1600; Steps per unit
