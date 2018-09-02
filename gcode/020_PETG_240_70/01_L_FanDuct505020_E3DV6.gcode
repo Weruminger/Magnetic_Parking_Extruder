@@ -19,7 +19,7 @@ M82 ;absolute extrusion mode
 ; #CALRESO# M205 X3.0 Y3.0 Z0.3 E5.0 ; +CALRESO+ Default Jerk
 ; #CALMPE# M951 L32 R138 G32 N75 H300 D10 C0 ; +CALMPE+ Parking kinematic values / needs MPE kinematic to be compiled and activated in firmware
 M218 T1 X0.70 Y0.20 Z0.25; +CALMPE+ T1 Nozzle offset values
-M851 Z-0.85 ; +CALMPE+ System Z Probe Offset
+M851 Z-0.95 ; +CALMPE+ System Z Probe Offset
 G28 ;Home
 G0 X32 Y0 F9000
 G92 X0 E5
