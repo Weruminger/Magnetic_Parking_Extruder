@@ -1,0 +1,99 @@
+<snip name:"Machine Settings | Printer | Start G-code">
+; Printer start settings begin
+; Calibration section to overwrite Firmware values
+; Identifier CALIBR, CALRES and CALMPE, surrounded by #, + or - can be used in post processing 
+; #CALIBR# M92 X160 Y160 Z3200 ; +CALIBR+ Steps per unit
+; #CALRESO# M201 X1000 Y1000 Z50 E1500 E1500 ; +CALRESO+ Max Accelleration
+; #CALRESO# M203 X800 Y800 Z2 E90 E90 ; +CALRESO+ Max Feed
+; #CALRESO# M205 X3.0 Y3.0 Z0.3 E5.0 ; +CALRESO+ Default Jerk
+; #CALMPE# M951 L32 R138 G32 N75 H300 D10 C0 ; +CALMPE+ Parking kinematic values / needs MPE kinematic to be compiled and activated in firmware
+M218 T1 X0.70 Y0.20 Z0.25; +CALMPE+ T1 Nozzle offset values
+M851 Z-0.85 ; +CALMPE+ System Z Probe Offset
+G28 ;Home
+G0 X32 Y0 F9000
+G92 X0 E5
+G1 F1000 E0
+; #MPE# G29 ; -MPE- Auto Bed Level, uses this if FW values are set correct.
+G29 X3 Y3 L0 R109 F32 B168 ; +MPE+ Auto Bed Leveling, needed if not poroper defined in Firmware 
+G92 E-5
+G1 E0 F400
+G0 Z15.0 F100 ;Move the platform down 15mm
+G0 X0 Y0 F9000 ;Move to front
+G1 F200 E3
+G92 E0
+; Printer start settings end
+</snip>
+
+<snip name:"Machine Settings | Printer | Start G-code">
+; end of g-code begin
+M140 S0 ; cool down bed
+T0 ; switch to default extruder
+G92 E5 ; prerare retraction to cool down
+G1 X0 Y0 E0 F4000 ; move to [0,0] and retract filament 
+M107 ; Stop Model cooler
+M104 T0 S0 ; cool down extruder 1
+M104 T1 S0 ; cool down extruder 2
+M84 ; stop idle hold. you normaly have to home all axis and run auto level before next print.
+; end of g-code end
+</snip>
+
+<snip name:"Machine Settings | Left Extruder | Extruder Start G-code">
+; START MPE 0
+; ## if MPE tool change kinematic is not realized in firmware, uncomment lines
+;    with prefix '; #MPE# " by deleting this prefix.  
+;    #MPE# , +MPE+ and -MPE- are set for easy post processing with regular expressions
+; #MPE# M104 S{material_print_temperature} ; +MPE+ start extruder heating before kinematic  
+; #MPE# G91 ; +MPE+ Do Z Lift
+; #MPE# G0 Z1; +MPE+
+; #MPE# G90; +MPE+
+; #MPE# G0 X10 F9000 ; +MPE+ PreTravel
+; #MPE# G0 X0 F6000  ; +MPE+ Travel to T0 Parking Pos
+; #MPE# G0 X-32 F3000 ; +MPE+ Travel to T0 Coupling Pos (Pick T0)
+; #MPE# G0 X100 F9000 ; +MPE+ Pre Travel
+; #MPE# G0 X109 F3000 ; +MPE+ Travel to T1 Parking Pos (Park T1)
+; #MPE# G91; +MPE+  Resume Z-Lift
+; #MPE# G0 Z-1; +MPE+
+; #MPE# G90; +MPE+
+G11 ; Resume filament
+; START MPE 0 Done</snip>
+
+<snip name:"Machine Settings | Left Extruder | Extruder End G-code">
+; END MPE 0
+; next line is needed only for Firmware MPE kinematic, to use the time for kinematic to heat up
+M104 T1 S{material_print_temperature,1} ; -MPE- Set print temp before kinematic tool change to save time
+M104 S{material_standby_temperature} ; Set Stendby temp
+M107 ; Stop model cooler
+G10 ; Retract filament
+; END MPE 0 Done
+</snip>
+
+<snip name:"Machine Settings | Right Extruder | Extruder Start G-code">
+; START MPE 1
+; ## if MPE tool chang kinematic is not realized in firmware uncomment lines
+;    with prefix '; #MPE# " by deleting this prefix.
+;    #MPE# , +MPE+ and -MPE- are set for easy post processing with regular expressions
+; #MPE# M104 S{material_print_temperature} ; +MPE+ start extruder heating before kinematic  
+; #MPE# G91 ; +MPE+ Do Z Lift
+; #MPE# G0 Z1; +MPE+
+; #MPE# G90; +MPE+
+; #MPE# G0 X100 F9000 ; +MPE+ PreTravel
+; #MPE# G0 X109 F6000  ; +MPE+ Travel to T1 Parking Pos
+; #MPE# G0 X141 F3000 ; +MPE+ Travel to T2 Coupling Pos (Pick T1)
+; #MPE# G0 X10 F9000 ; +MPE+ Pre Travel
+; #MPE# G0 X0 F3000 ; +MPE+ Travel to T0 Parking Pos (Park T0)
+; #MPE# G91; +MPE+  Resume Z-Lift
+; #MPE# G0 Z-1; +MPE+
+; #MPE# G90; +MPE+
+G11 ; Resume filament
+; START MPE 1 Done
+</snip>
+
+<snip name:"Machine Settings | Right Extruder | Extruder End G-code">
+; END MPE 1
+; next line is needed only for Firmware MPE kinematic, to use the time for kinematic to heat up
+M104 T0 S{material_print_temperature,0} ; Set print temp before kinematic tool change to save time
+M104 S{material_standby_temperature} ; Set Stendby temp
+M107 ; Stop model cooler
+G10 ; Retract filament
+; END MPE 1 Done
+</snip>
